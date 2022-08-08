@@ -260,6 +260,7 @@ try:
         report()
 
         if False: pass
+        elif instruction == '': pass
         elif instruction == 'comment': pass
         elif instruction == 'in':
             if parameters == '':
