@@ -87,11 +87,12 @@ def parse_value(value):
     # with one or no '- character,
     #               some or no characters from "0123456789", one or no '. character,
     #           and some or no characters from "0123456789", the letter "E",
+    #           one or no '- character,
     #               some or no characters from "0123456789", one or no '. character,
     #           and some or no characters from "0123456789"
     # Use re.match to check if the string matches the pattern.
 
-    scino_float_pattern = r'^-?[0-9]*\.*[0-9]*E[0-9]*\.*[0-9]*$'
+    scino_float_pattern = r'^-?[0-9]*\.*[0-9]*E-?[0-9]*\.*[0-9]*$'
     if re.match(scino_float_pattern, value):
         first, second = value.split('E')
         if first == '': first = '0'
@@ -99,7 +100,9 @@ def parse_value(value):
         if first == '.': first = '0'
         if first == '-.': first = '0'
         if second == '': second = '0'
+        if second == '-': second = '0'
         if second == '.': second = '0'
+        if second == '-.': second = '0'
         return float(first) * 10 ** float(second)
 
     # string:
@@ -121,9 +124,10 @@ def parse_value(value):
     #           "''" will denote the '' character inside of "".
     # Use re.match to check if the string matches the pattern.
 
-    character_pattern = r'^\'.$'
+    character_pattern = r'^\'.\'?$'
     if re.match(character_pattern, value):
-        return value[1:]
+        value = value[1:]
+        return value[0]
 
     if value == '[]': return list()
     if value == '{}': return set()
@@ -302,11 +306,11 @@ try:
                 if var_name == '': var_name = 'last'
                 if var_value == '':
                     if 'last' in variables:
-                        var_value = variables['last']
+                        var_value = 'last'
                     else:
                         warn(f'UNDEF VAR last IN LINE {current_line}')
                         variables['last'] = 0
-                        var_value = variables['last']
+                        var_value = 'last'
                 if var_value == 'last': var_value = variables['last']
                 else: var_value = parse_value(var_value)
                 variables[var_name] = var_value
