@@ -121,3 +121,67 @@ The following are possible classes for statements:
 ## `comment`
 
 Declares the line as a comment.
+
+## `set [VAR=last] to [VAL=last]`
+
+`last` is a special variable in Sun Sip: all variables default to `last` if unspecified.
+
+`set variable to 123` sets the variable named `variable` to the integer value `123`.
+
+`set to 123` sets the variable named `last` to `123`.
+
+`set variable to` sets the variable named `variable` to whatever value `last` is.
+
+`set to` sets the variable named `last` to whatever value `last` is. Not very helpful, but syntactically correct.
+
+### There are many options for VAL:
+
+- Integer, for instance 2786, -124897, 000000124, or -0
+- Decimal, for instance 3.14, -0.0000, .14285714, or 3. (or even . if you want to, but why?)
+- Sci.Int, for instance 3e98, 5123e38, -123456e9
+- Sci.Dec, for instance .8E9, .999E.8, or even 1E-. (which equals 1.0E-0.0)
+-    String, for instance "abc, "abcde", "ending with a quote"" (it is not possible to literally write a newline character)
+- Character, for instance 'a, 'b, '', '", ' '
+- \[\], empty list
+- {}, empty set
+- <>, empty stack
+- Boolean, y for True, n for False
+- And of course, `last`
+
+## `in [VAR=last]`
+
+Get user info for VAR and stores it into `last`. For instance,
+
+```
+set var to "How old are you?"
+in var
+```
+
+Sets the variable `last` to the age of the user. `in` returns a string.
+
+The same code can be shortened into:
+
+```
+set to "How old are you?
+in
+```
+
+Which will instead use `last` for storing the string "How old are you?". Note that this way
+the string will be overridden by user input.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
