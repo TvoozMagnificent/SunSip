@@ -2,7 +2,7 @@
 
 ## Table of Contents
 
-- [Installation](https://github.com/TvoozMagnificent/SunSip/edit/main/README.md#installation)
+- [Installation](https://github.com/TvoozMagnificent/SunSip/main/README.md#installation)
 - [Execution (Installation via `pip`)](https://github.com/TvoozMagnificent/SunSip/main/README.md#execution-installation-via-pip)
 - [Execution (Installation from source)](https://github.com/TvoozMagnificent/SunSip/main/README.md#execution-installation-from-source)
 - [Debugging](https://github.com/TvoozMagnificent/SunSip/main/README.md#debugging)
