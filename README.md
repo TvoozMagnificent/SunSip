@@ -5,6 +5,7 @@
 - [Installation](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#installation)
 - [Execution (Installation via `pip`)](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#execution-installation-via-pip)
 - [Execution (Installation from source)](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#execution-installation-from-source)
+- [Getting Started](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#getting-started)
 - [Debugging](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#debugging)
 - [Suppressing Warnings](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#suppressing-warnings)
 
@@ -71,6 +72,16 @@ For a list of options, refer to the help menu accessible via `python pathtoinit 
 ```
 
 **Note: When using the `--help` flag, the usage says `python3 main.py program.slwnsnbp [options]`, which is inaccurate.**
+
+## Getting Started
+
+If you haven't installed SunSip, do so by referring to the [Installation Section](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#installation).
+
+First, create a folder on your desktop called `hellosnsp`. This folder will store all of your programs.
+
+Next, open the terminal.
+
+WIP
 
 ## Debugging
 
