@@ -21,9 +21,9 @@ def before_run():
     try:
         file_containing_program = sys.argv[1]
     except IndexError:
-        print('\nNo program specified.\n'
+        print('\033[91m\nNo program specified.\n'
               'Use the --help option for '
-              'usage help.\n'); sys.exit()
+              'usage help.\033[0m\n'); sys.exit()
     debug_mode = '-d' in sys.argv
     disable_warnings = '-w' in sys.argv
     verbose_mode = '-v' in sys.argv
@@ -32,10 +32,10 @@ def before_run():
         with open(file_containing_program, 'r') as f:
             program = f.readlines()
     except FileNotFoundError:
-        print(f'Sorry, I can not find the file: '
+        print(f'\033[91mSorry, I can not find the file: '
               f'{file_containing_program}.'
-              f'Check the path, name, and file extension.'
-              f'\nFor usage help, use the --help option.')
+              f'\nCheck the path, name, and file extension.'
+              f'\nFor usage help, use the --help option.\033[0m\n')
         sys.exit()
 
     return program, debug_mode, disable_warnings, verbose_mode
@@ -298,6 +298,22 @@ try:
                     warn(f'UNDEF VAR {var_name} IN LINE {current_line}')
                     variables[var_name] = 0
                     print(implied_type_conversion(variables[var_name], 'string'))
+        elif instruction == 'line':
+            if parameters == '':
+                if 'last' in variables:
+                    print(implied_type_conversion(variables['last'], 'string'), end='')
+                else:
+                    warn(f'UNDEF VAR last IN LINE {current_line}')
+                    variables['last'] = 0
+                    print(implied_type_conversion(variables['last'], 'string'), end='')
+            else:
+                var_name = parameters.strip()
+                if var_name in variables:
+                    print(implied_type_conversion(variables[var_name], 'string'), end='')
+                else:
+                    warn(f'UNDEF VAR {var_name} IN LINE {current_line}')
+                    variables[var_name] = 0
+                    print(implied_type_conversion(variables[var_name], 'string'), end='')
         elif instruction == 'set':
             parameters = ' '+parameters+' '
             if ' to ' in parameters:
@@ -591,7 +607,7 @@ try:
                     warn(f'UNDEF VAR {arguments[1]} IN LINE {current_line+1}')
                     variables[arguments[1]] = 0
                 variables['last'] = implied_type_conversion(variables[arguments[0]],
-                                                            'array') + [arguments[1]]
+                                                            'array') + [variables[arguments[1]]]
             elif function == 'join':
                 arguments += ['last'] * 5
                 if arguments[0] not in variables:
