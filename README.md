@@ -5,9 +5,11 @@
 - [Installation](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#installation)
 - [Execution (Installation via `pip`)](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#execution-installation-via-pip)
 - [Execution (Installation from source)](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#execution-installation-from-source)
-- [Getting Started](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#getting-started)
+- [Test Your Installation](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#test-your-installation)
 - [Debugging](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#debugging)
 - [Suppressing Warnings](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#suppressing-warnings)
+- [Contributing](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#contributing)
+- [I found a bug!!!](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#i-found-a-bug)
 
 ## Installation
 
@@ -73,15 +75,25 @@ For a list of options, refer to the help menu accessible via `python pathtoinit 
 
 **Note: When using the `--help` flag, the usage says `python3 main.py program.slwnsnbp [options]`, which is inaccurate.**
 
-## Getting Started
+## Test Your Installation
 
 If you haven't installed SunSip, do so by referring to the [Installation Section](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#installation).
 
 First, create a folder on your desktop called `hellosnsp`. This folder will store all of your programs.
+Create a text file named `firstprogram.txt` inside the folder, and write:
 
-Next, open the terminal.
+```
+comment this should print hello world
+set to "Hello, World! "
+out
+```
 
-WIP
+Execute the file (see the [Execution Sections](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#table-of-contents)).
+It should produce the output:
+
+```
+Hello, World! 
+```
 
 ## Debugging
 
@@ -259,3 +271,19 @@ WARNING: IMPL TYPE CONV AT LINE 37
 It is not recommended to turn off warnings while debugging, but it is allowed to use `-d -w` or `-w -d`.
 
 **Note: `-dw` or `-wd` is not supported by SunSip.**
+
+# Contributing
+
+I want to contribute! How?
+
+Method 1, create a pull request. Method 2, edit directly. Method 3, open an issue.
+
+We accept contributions that add functionality, fixxes bugs, or raises bugs. **However, code editors must create a pull request
+or open an issue, and the issue must be passed before they do the editting.**
+
+**If your code raises a bug, please explicitly paste the output, warnings, and debuggings.**
+
+# I found a bug!!!
+
+See [Contributing](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#contributing).
+
