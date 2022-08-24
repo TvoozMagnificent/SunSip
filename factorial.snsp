@@ -1,0 +1,48 @@
+set 180 to 180
+set 5 to 5
+set 4 to 4
+set 1 to 1
+set number to 1
+set to "
+out
+set empty to " "
+
+set to "
+calc type number
+calc type last number
+set length to
+calc subtraction 5 length
+set i to
+set stack to []
+calc push stack number
+set stack to last
+
+calc push stack empty
+set stack to last
+calc subtraction i 1
+set i to
+calc less i 1
+calc multiplication last 4
+skip
+
+set to 10
+back
+
+calc factorial number
+calc push stack last
+set stack to
+set to "
+calc join stack
+out
+calc addition number 1
+set number to
+set to 40
+calc greater number last
+calc multiplication last 4
+skip
+
+set to 36
+back
+
+set to "
+out
