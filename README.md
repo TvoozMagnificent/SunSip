@@ -281,7 +281,7 @@ Method 1, create a pull request. Method 2, edit directly. Method 3, open an issu
 We accept contributions that add functionality, fixxes bugs, or raises bugs. **However, code editors must create a pull request
 or open an issue, and the issue must be passed before they do the editting.**
 
-**If your code raises a bug, please explicitly paste the output, warnings, and debuggings.**
+**If your code implies a bug, please explicitly paste the output, warnings, and debuggings.**
 
 # I found a bug!!!
 
