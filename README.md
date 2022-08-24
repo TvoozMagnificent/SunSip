@@ -24,6 +24,8 @@ pip install SunSip
 
 Or whatever way you use `pip`.
 
+Currently, the `pip` version might be outdated.
+
 ## Execution (Installation via `pip`)
 
 SunSip code can be named with any extension, although the preferred extension is either none, `.txt`, `.sunsip`, `.snsp`, or `.slwnsnbp`.
