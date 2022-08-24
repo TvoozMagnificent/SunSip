@@ -26,7 +26,7 @@ Or whatever way you use `pip`.
 
 ## Execution (Installation via `pip`)
 
-SunSip code can be named with any extension, although the preferred extension is either none, `.sunsip`, `.snsp`, or `.slwnsnbp`.
+SunSip code can be named with any extension, although the preferred extension is either none, `.txt`, `.sunsip`, `.snsp`, or `.slwnsnbp`.
 
 After writing the SunSip code, you can execute it using
 
@@ -53,7 +53,7 @@ For a list of options, refer to the help menu accessible via `python -m SunSip -
 
 ## Execution (Installation from source)
 
-SunSip code can be named with any extension, although the preferred extension is either none, `.sunsip`, `.snsp`, or `.slwnsnbp`.
+SunSip code can be named with any extension, although the preferred extension is either none, `.txt`, `.sunsip`, `.snsp`, or `.slwnsnbp`.
 
 After writing the SunSip code, you can execute it using
 
