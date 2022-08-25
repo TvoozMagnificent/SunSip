@@ -155,7 +155,7 @@ def string(value):
     if value_type == 'bool':
         if value: return 'y'
         return 'n'
-    if value_type == 'list': return '['+','.join(string(i) for i in value)+']'
+    if value_type == 'array': return '['+','.join(string(i) for i in value)+']'
     if value_type == 'set': return '{'+','.join(string(i) for i in value)+'}'
     warn(f'{value} STR NOT RECOG AT LINE {current_line+1}'); return '0'
 def implied_type_conversion(value, to_type, implied=True):
