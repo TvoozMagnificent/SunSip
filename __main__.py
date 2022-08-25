@@ -692,6 +692,22 @@ try:
                 variables['last'] = float(implied_type_conversion(
                     variables[arguments[0]],
                     'string'))
+            elif function == 'char':
+                arguments += ['last'] * 5
+                if arguments[0] not in variables:
+                    warn(f'UNDEF VAR {arguments[0]} IN LINE {current_line+1}')
+                    variables[arguments[0]] = 0
+                variables['last'] = chr(implied_type_conversion(
+                    variables[arguments[0]],
+                    'int'))
+            elif function == 'float':
+                arguments += ['last'] * 5
+                if arguments[0] not in variables:
+                    warn(f'UNDEF VAR {arguments[0]} IN LINE {current_line+1}')
+                    variables[arguments[0]] = 0
+                variables['last'] = ord(implied_type_conversion(
+                    variables[arguments[0]],
+                    'character'))
             # math functions
             elif function == 'sine':
                 arguments += ['last'] * 5
