@@ -544,7 +544,7 @@ try:
                         warn(f'UNDEF VAR {arguments[i+1]} IN LINE {current_line+1}')
                         variables[arguments[i+1]] = 0
                     true = true and less(variables[arguments[i]], variables[arguments[i+1]])
-                variables['last'] = true
+                variables['last'] = True
             elif function == 'greater':
                 true = True
                 for i in range(len(arguments)-1):
@@ -555,7 +555,7 @@ try:
                         warn(f'UNDEF VAR {arguments[i+1]} IN LINE {current_line+1}')
                         variables[arguments[i+1]] = 0
                     true = true and greater(variables[arguments[i]], variables[arguments[i+1]])
-                variables['last'] = true
+                variables['last'] = True
             elif function == 'equal':
                 true = True
                 for i in range(len(arguments)-1):
@@ -566,7 +566,7 @@ try:
                         warn(f'UNDEF VAR {arguments[i+1]} IN LINE {current_line+1}')
                         variables[arguments[i+1]] = 0
                     true = true and equal(variables[arguments[i]], variables[arguments[i+1]])
-                variables['last'] = true
+                variables['last'] = True
             elif function == 'pop':
                 arguments += ['last'] * 5
                 if arguments[0] not in variables:
@@ -693,7 +693,7 @@ try:
                 variables['last'] = float(implied_type_conversion(
                     variables[arguments[0]],
                     'string'))
-            elif function == 'char':
+            elif function == 'character':
                 arguments += ['last'] * 5
                 if arguments[0] not in variables:
                     warn(f'UNDEF VAR {arguments[0]} IN LINE {current_line+1}')
@@ -701,7 +701,7 @@ try:
                 variables['last'] = chr(implied_type_conversion(
                     variables[arguments[0]],
                     'int'))
-            elif function == 'float':
+            elif function == 'ordinal':
                 arguments += ['last'] * 5
                 if arguments[0] not in variables:
                     warn(f'UNDEF VAR {arguments[0]} IN LINE {current_line+1}')
