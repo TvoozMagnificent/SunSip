@@ -666,6 +666,16 @@ try:
                     variables[arguments[1]] = 0
                 variables['last'] = implied_type_conversion(variables[arguments[0]],
                     type_(variables[arguments[1]]), implied=False)
+            elif function == 'verbatimtype':
+                arguments += ['last'] * 5
+                if arguments[0] not in variables:
+                    warn(f'UNDEF VAR {arguments[0]} IN LINE {current_line+1}')
+                    variables[arguments[0]] = 0
+                if arguments[1] not in variables:
+                    warn(f'UNDEF VAR {arguments[1]} IN LINE {current_line+1}')
+                    variables[arguments[1]] = 0
+                variables['last'] = implied_type_conversion(variables[arguments[0]],
+                    variables[arguments[1]], implied=False)
             elif function == 'int':
                 arguments += ['last'] * 5
                 if arguments[0] not in variables:
