@@ -194,13 +194,13 @@ def implied_type_conversion(value, to_type, implied=True):
     if from_type == 'bool' and to_type == 'character':
         if value: return 'y'
         return 'n'
-    if from_type == 'array' and to_type == 'bool': return value==[]
-    if from_type == 'set' and to_type == 'bool': return value==set()
-    if from_type == 'stack' and to_type == 'bool': return value==[]
+    if from_type == 'array' and to_type == 'bool': return value!=[]
+    if from_type == 'set' and to_type == 'bool': return value!=set()
+    if from_type == 'stack' and to_type == 'bool': return value!=[]
     if from_type == 'bool' and to_type == 'array': return []
     if from_type == 'bool' and to_type == 'set': return set()
     if from_type == 'bool' and to_type == 'stack': return []
-    if from_type == 'string' and to_type == 'bool': return value==''
+    if from_type == 'string' and to_type == 'bool': return value!=''
     if from_type == 'string' and to_type == 'int': return len(value)
     if from_type == 'string' and to_type == 'float': return float(len(value))
     if from_type == 'int' and to_type == 'array': return [*range(1,value+1)]
