@@ -11,18 +11,24 @@
 - [Suppressing Warnings](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#suppressing-warnings)
 - [Contributing](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#contributing)
 - [I found a bug!!!](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#i-found-a-bug)
-- Learn SunSip: Refer to the [Wiki](https://github.com/TvoozMagnificent/SunSip/wiki)
+- [Learn SunSip: Refer to the Wiki](https://github.com/TvoozMagnificent/SunSip/wiki)
+- [Research](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#research)
+- [Trailer](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#trailer)
+- [About Me](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#about-me)
 
 ## Introduction
 
 SunSip, SLWNSNBP, or Simple Language Which Name Shall Not Be Pronounced, is a Turing Complete, Practical, Whitespace Insignificant,
 Simple programming language (which name shall not be pronouced). SunSip is based on variables, with a simple concept and syntax,
 designed to be beginner friendly. There are goals to turn it into a golfing language (by shortening instructions, et cetera.,) but that
-is currently just a thought.
+is currently just a thought. The slogan is, `800 lines of code, for a good coding experience`. This is a project that I am working on
+in order to apply for a certain science club. You can refer to the [Research](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#research)
+section for details.
 
 ## Installation
 
-First, you have to install python via python.org. You might already have it installed, or you might not.
+First, you have to install python via python.org. You might already have it installed, or you might not.<img width="828" alt="image" src="https://user-images.githubusercontent.com/98521363/186843644-771e32f4-bc7b-4856-8a69-893b957905a2.png">
+
 
 SunSip can be installed from source or via `pip`. To install SunSip via `pip`, use:
 
@@ -35,6 +41,7 @@ Or whatever way you use `pip`.
 Currently, the `pip` version might be outdated.
 
 ## Execution (Installation via `pip`)
+<img width="961" alt="image" src="https://user-images.githubusercontent.com/98521363/186843632-03ac9a9c-c728-4aff-878b-4e6bd897a7f7.png">
 
 SunSip code can be named with any extension, although the preferred extension is either none, `.txt`, `.sunsip`, `.snsp`, or `.slwnsnbp`.
 
@@ -297,4 +304,66 @@ or open an issue, and the issue must be passed before they do the editting.**
 # I found a bug!!!
 
 See [Contributing](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#contributing).
+
+# Research
+
+As I have said, this is a research project.
+
+---
+
+<img width="720" alt="image" src="https://user-images.githubusercontent.com/98521363/186842342-01dc0a56-1f35-450d-8503-b5142c44affd.png">
+
+---
+
+<img width="828" alt="image" src="https://user-images.githubusercontent.com/98521363/186842476-6fb5a480-87e4-4bd9-ba1a-ff024a8c5747.png">
+
+---
+
+<img width="828" alt="image" src="https://user-images.githubusercontent.com/98521363/186842509-2ebd5534-0888-4739-b979-b9fa7cf72263.png">
+
+---
+
+<img width="828" alt="image" src="https://user-images.githubusercontent.com/98521363/186842722-d0ff2259-ddb3-4e01-88df-9cbc75d1f26b.png">
+
+---
+
+<img width="828" alt="image" src="https://user-images.githubusercontent.com/98521363/186842769-7e719b66-ea41-4f18-bd4f-a4473f207b60.png">
+
+---
+
+<img width="828" alt="image" src="https://user-images.githubusercontent.com/98521363/186842795-be059edb-68d2-4143-a047-ac4a74a564b7.png">
+
+---
+
+<img width="828" alt="image" src="https://user-images.githubusercontent.com/98521363/186842824-cff52f36-675d-4db0-8bf8-9d9eb761cb75.png">
+
+---
+
+# Trailer
+
+---
+
+<img width="961" alt="image" src="https://user-images.githubusercontent.com/98521363/186843509-6806689b-516a-47db-be87-32dcb03e348f.png">
+
+---
+
+# About Me
+
+---
+
+<img width="828" alt="image" src="https://user-images.githubusercontent.com/98521363/186843928-cff2cf78-d72b-4ab4-be76-856bfd514502.png">
+
+---
+
+<img width="828" alt="image" src="https://user-images.githubusercontent.com/98521363/186843830-e9315aae-92a0-4c79-a49b-688ad7ec62f6.png">
+
+---
+
+<img width="828" alt="image" src="https://user-images.githubusercontent.com/98521363/186843975-a5430c6f-f3fd-45cd-ae87-9f8803a44264.png">
+
+---
+
+<img width="828" alt="image" src="https://user-images.githubusercontent.com/98521363/186844021-64996a74-8c0a-4730-bc2b-a3afe7df0085.png">
+
+---
 
