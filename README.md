@@ -27,8 +27,7 @@ section for details.
 
 ## Installation
 
-First, you have to install python via python.org. You might already have it installed, or you might not.<img width="828" alt="image" src="https://user-images.githubusercontent.com/98521363/186843644-771e32f4-bc7b-4856-8a69-893b957905a2.png">
-
+First, you have to install python via python.org. You might already have it installed, or you might not.
 
 SunSip can be installed from source or via `pip`. To install SunSip via `pip`, use:
 
