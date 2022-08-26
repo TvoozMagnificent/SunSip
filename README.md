@@ -41,7 +41,6 @@ Or whatever way you use `pip`.
 Currently, the `pip` version might be outdated.
 
 ## Execution (Installation via `pip`)
-<img width="961" alt="image" src="https://user-images.githubusercontent.com/98521363/186843632-03ac9a9c-c728-4aff-878b-4e6bd897a7f7.png">
 
 SunSip code can be named with any extension, although the preferred extension is either none, `.txt`, `.sunsip`, `.snsp`, or `.slwnsnbp`.
 
