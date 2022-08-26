@@ -2,6 +2,7 @@
 
 ## Table of Contents
 
+- [Introduction](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#introduction)
 - [Installation](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#installation)
 - [Execution (Installation via `pip`)](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#execution-installation-via-pip)
 - [Execution (Installation from source)](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#execution-installation-from-source)
@@ -11,6 +12,13 @@
 - [Contributing](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#contributing)
 - [I found a bug!!!](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#i-found-a-bug)
 - Learn SunSip: Refer to the [Wiki](https://github.com/TvoozMagnificent/SunSip/wiki)
+
+## Introduction
+
+SunSip, SLWNSNBP, or Simple Language Which Name Shall Not Be Pronounced, is a Turing Complete, Practical, Whitespace Insignificant,
+Simple programming language (which name shall not be pronouced). SunSip is based on variables, with a simple concept and syntax,
+designed to be beginner friendly. There are goals to turn it into a golfing language (by shortening instructions, et cetera.,) but that
+is currently just a thought.
 
 ## Installation
 
