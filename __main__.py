@@ -544,7 +544,7 @@ try:
                         warn(f'UNDEF VAR {arguments[i+1]} IN LINE {current_line+1}')
                         variables[arguments[i+1]] = 0
                     true = true and less(variables[arguments[i]], variables[arguments[i+1]])
-                variables['last'] = True
+                variables['last'] = true
             elif function == 'greater':
                 true = True
                 for i in range(len(arguments)-1):
@@ -555,7 +555,7 @@ try:
                         warn(f'UNDEF VAR {arguments[i+1]} IN LINE {current_line+1}')
                         variables[arguments[i+1]] = 0
                     true = true and greater(variables[arguments[i]], variables[arguments[i+1]])
-                variables['last'] = True
+                variables['last'] = true
             elif function == 'equal':
                 true = True
                 for i in range(len(arguments)-1):
