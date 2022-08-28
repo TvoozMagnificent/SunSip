@@ -140,12 +140,12 @@ def parse_value(value):
     return 0
 def type_(value, careful=0):
     if careful: return 'int' if value not in variables else type_(variables[value])
+    if isinstance(value, bool): return 'bool'
     if isinstance(value, int): return 'int'
     if isinstance(value, float): return 'float'
     if isinstance(value, str): return 'string'
     if isinstance(value, list): return 'array'
     if isinstance(value, set): return 'set'
-    if isinstance(value, bool): return 'bool'
     warn(f'{value} TYPE NOT RECOG'); return 'int'
 def string(value):
     value_type = type_(value)
