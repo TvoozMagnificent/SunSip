@@ -11,6 +11,7 @@
 - [Suppressing Warnings](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#suppressing-warnings)
 - [Contributing](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#contributing)
 - [I found a bug!!!](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#i-found-a-bug)
+- [Syntax Highlighting](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#syntax-highlighting)
 - [Learn SunSip: Refer to the Wiki](https://github.com/TvoozMagnificent/SunSip/wiki)
 - [Research](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#research)
 - [Trailer](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#trailer)
@@ -53,15 +54,6 @@ Or whatever way you use `python`. Include the `-m` flag, and substitute `program
 
 For a list of options, refer to the help menu accessible via `python -m SunSip --help`.
 
-```
-    Syntax: python -m SunSip program [options]
-    Options:
-        --help : Print this help message and exit.
-        -d     : Debug mode.
-        -v     : Verbose mode.
-        -w     : Disable warnings.
-```
-
 **Note: When using the `--help` flag, the usage says `python3 main.py program.slwnsnbp [options]`, which is inaccurate.**
 
 **Note: The terminal would warn, `<snip>: No module named SunSip.__main__; 'SunSip' is a package and cannot be directly executed`. Ignore such warnings.**
@@ -79,15 +71,6 @@ python pathtoinit pathtoprogram [options]
 Or whatever way you use `python`. Substitute `program` for the path to your program, including the file name and extension, and `pathtoinit` is the path to the `__init__.py` file.
 
 For a list of options, refer to the help menu accessible via `python pathtoinit --help`, where `pathtoinit` is the path to the `__init__.py` file.
-
-```
-    Syntax: python pathtoinit pathtoprogram [options]
-    Options:
-        --help : Print this help message and exit.
-        -d     : Debug mode.
-        -v     : Verbose mode.
-        -w     : Disable warnings.
-```
 
 **Note: When using the `--help` flag, the usage says `python3 main.py program.slwnsnbp [options]`, which is inaccurate.**
 
@@ -302,6 +285,14 @@ or open an issue, and the issue must be passed before they do the editting.**
 # I found a bug!!!
 
 See [Contributing](https://github.com/TvoozMagnificent/SunSip/blob/main/README.md#contributing).
+
+# Syntax Highlighting
+
+Simply run:
+
+```
+python -m SunSip program [options]
+```
 
 # Research
 
