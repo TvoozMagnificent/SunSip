@@ -389,7 +389,7 @@ def parse_value(value):
 
     warn(f'VALUE {value} NOT RECOG AT LINE {current_line+1}')
     return 0
-def type_(value, careful=0):
+def type_(value, careful=0, variables={}):
     if careful: return 'int' if value not in variables else type_(variables[value])
     if isinstance(value, bool): return 'bool'
     if isinstance(value, int): return 'int'
@@ -409,7 +409,7 @@ def string(value):
     if value_type == 'array': return '['+','.join(string(i) for i in value)+']'
     if value_type == 'set': return '{'+','.join(string(i) for i in value)+'}'
     warn(f'{value} STR NOT RECOG AT LINE {current_line+1}'); return '0'
-def implied_type_conversion(value, to_type, implied=True):
+def implied_type_conversion(value, to_type, current_line, implied=True):
     from_type = type_(value)
     if type(to_type) == dict: to_type = to_type[from_type]
     if from_type == to_type: return value
@@ -466,36 +466,36 @@ def implied_type_conversion(value, to_type, implied=True):
     if from_type == 'set' and to_type == 'float': return float(len(value))
     warn(f'UNEXP ERR AT LINE {current_line+1}')
 
-def less(a, b):
-    if type_(a) == 'int': return a < implied_type_conversion(b, 'int')
-    if type_(a) == 'float': return a < implied_type_conversion(b, 'float')
-    if type_(a) == 'string': return a < implied_type_conversion(b, 'string')
-    if type_(a) == 'bool': return a < implied_type_conversion(b, 'bool')
+def less(a, b, current_line):
+    if type_(a) == 'int': return a < implied_type_conversion(b, 'int', current_line)
+    if type_(a) == 'float': return a < implied_type_conversion(b, 'float', current_line)
+    if type_(a) == 'string': return a < implied_type_conversion(b, 'string', current_line)
+    if type_(a) == 'bool': return a < implied_type_conversion(b, 'bool', current_line)
     if type_(a) == 'array':
-        b = implied_type_conversion(b, 'array')
+        b = implied_type_conversion(b, 'array', current_line)
         for i in range(min(len(a), len(b))):
-            if less(a[i], b[i]): return True
-            if less(b[i], a[i]): return False
+            if less(a[i], b[i], current_line): return True
+            if less(b[i], a[i], current_line): return False
         return len(a) < len(b)
     if type_(a) == 'set':
-        b = implied_type_conversion(b, 'set')
+        b = implied_type_conversion(b, 'set', current_line)
         if len(a) >= len(b): return False
         for i in a:
             if i not in b: return False
         return True
-def greater(a, b): return less(b, a)
-def equal(a, b):
-    if type_(a) == 'int': return a == implied_type_conversion(b, 'int')
-    if type_(a) == 'float': return a == implied_type_conversion(b, 'float')
-    if type_(a) == 'string': return a == implied_type_conversion(b, 'string')
-    if type_(a) == 'bool': return a == implied_type_conversion(b, 'bool')
+def greater(a, b, current_line): return less(b, a, current_line)
+def equal(a, b, current_line):
+    if type_(a) == 'int': return a == implied_type_conversion(b, 'int', current_line)
+    if type_(a) == 'float': return a == implied_type_conversion(b, 'float', current_line)
+    if type_(a) == 'string': return a == implied_type_conversion(b, 'string', current_line)
+    if type_(a) == 'bool': return a == implied_type_conversion(b, 'bool', current_line)
     if type_(a) == 'array':
-        b = implied_type_conversion(b, 'array')
+        b = implied_type_conversion(b, 'array', current_line)
         return a==b
     if type_(a) == 'set':
-        b = implied_type_conversion(b, 'set')
-        return implied_type_conversion(a, 'array', implied=False) == \
-               implied_type_conversion(b, 'array', implied=False)
+        b = implied_type_conversion(b, 'set', current_line)
+        return implied_type_conversion(a, 'array', current_line, implied=False) == \
+               implied_type_conversion(b, 'array', current_line, implied=False)
 
 def report(current_line, instruction, parameters, variables):
     if debug_mode:
@@ -524,51 +524,51 @@ def run(program, variables = None):
             elif instruction == 'in':
                 if parameters == '':
                     if 'last' in variables:
-                        variables['last'] = input(implied_type_conversion(variables['last'], 'string'))
+                        variables['last'] = input(implied_type_conversion(variables['last'], 'string', current_line))
                     else:
                         warn(f'UNDEF VAR last IN LINE {current_line}')
                         variables['last'] = 0
-                        variables['last'] = input(implied_type_conversion(variables['last'], 'string'))
+                        variables['last'] = input(implied_type_conversion(variables['last'], 'string', current_line))
                 else:
                     var_name = parameters.strip()
                     if var_name in variables:
-                        variables['last'] = input(implied_type_conversion(variables[var_name], 'string'))
+                        variables['last'] = input(implied_type_conversion(variables[var_name], 'string', current_line))
                     else:
                         warn(f'UNDEF VAR {var_name} IN LINE {current_line}')
                         variables[var_name] = 0
-                        variables['last'] = input(implied_type_conversion(variables[var_name], 'string'))
+                        variables['last'] = input(implied_type_conversion(variables[var_name], 'string', current_line))
             elif instruction == 'out':
                 if parameters == '':
                     if 'last' in variables:
-                        print(implied_type_conversion(variables['last'], 'string'))
+                        print(implied_type_conversion(variables['last'], 'string', current_line))
                     else:
                         warn(f'UNDEF VAR last IN LINE {current_line}')
                         variables['last'] = 0
-                        print(implied_type_conversion(variables['last'], 'string'))
+                        print(implied_type_conversion(variables['last'], 'string', current_line))
                 else:
                     var_name = parameters.strip()
                     if var_name in variables:
-                        print(implied_type_conversion(variables[var_name], 'string'))
+                        print(implied_type_conversion(variables[var_name], 'string', current_line))
                     else:
                         warn(f'UNDEF VAR {var_name} IN LINE {current_line}')
                         variables[var_name] = 0
-                        print(implied_type_conversion(variables[var_name], 'string'))
+                        print(implied_type_conversion(variables[var_name], 'string', current_line))
             elif instruction == 'line':
                 if parameters == '':
                     if 'last' in variables:
-                        print(implied_type_conversion(variables['last'], 'string'), end='')
+                        print(implied_type_conversion(variables['last'], 'string', current_line), end='')
                     else:
                         warn(f'UNDEF VAR last IN LINE {current_line}')
                         variables['last'] = 0
-                        print(implied_type_conversion(variables['last'], 'string'), end='')
+                        print(implied_type_conversion(variables['last'], 'string', current_line), end='')
                 else:
                     var_name = parameters.strip()
                     if var_name in variables:
-                        print(implied_type_conversion(variables[var_name], 'string'), end='')
+                        print(implied_type_conversion(variables[var_name], 'string', current_line), end='')
                     else:
                         warn(f'UNDEF VAR {var_name} IN LINE {current_line}')
                         variables[var_name] = 0
-                        print(implied_type_conversion(variables[var_name], 'string'), end='')
+                        print(implied_type_conversion(variables[var_name], 'string', current_line), end='')
             elif instruction == 'set':
                 parameters = ' '+parameters+' '
                 if ' to ' in parameters:
@@ -576,79 +576,74 @@ def run(program, variables = None):
                     var_name, var_value = var_name.strip(), var_value.strip()
                     if var_name == '': var_name = 'last'
                     if var_value == '':
-                        if 'last' in variables:
-                            var_value = 'last'
-                        else:
-                            warn(f'UNDEF VAR last IN LINE {current_line}')
-                            variables['last'] = 0
-                            var_value = 'last'
+                        if 'last' in variables: var_value = 'last'
+                        else: var_value = None
                     if var_value == 'last': var_value = variables['last']
-                    else: var_value = parse_value(var_value)
-                    variables[var_name] = var_value
-                    variables['last'] = var_value
+                    elif var_value != None: var_value = parse_value(var_value)
+                    if var_value != None: variables[var_name] = var_value
                 else:
                     warn(f'UNEXP LINE {current_line+1}')
             elif instruction == 'skip':
                 if parameters == '':
                     if 'last' in variables:
-                        current_line += implied_type_conversion(variables['last'], 'int')
+                        current_line += implied_type_conversion(variables['last'], 'int', current_line)
                     else:
                         warn(f'UNDEF VAR last IN LINE {current_line}')
                         variables['last'] = 0
-                        current_line += implied_type_conversion(variables['last'], 'int')
+                        current_line += implied_type_conversion(variables['last'], 'int', current_line)
                 else:
                     var_name = parameters.strip()
                     if var_name in variables:
-                        current_line += implied_type_conversion(variables[var_name], 'int')
+                        current_line += implied_type_conversion(variables[var_name], 'int', current_line)
                     else:
                         warn(f'UNDEF VAR {var_name} IN LINE {current_line}')
                         variables[var_name] = 0
-                        current_line += implied_type_conversion(variables[var_name], 'int')
+                        current_line += implied_type_conversion(variables[var_name], 'int', current_line)
             elif instruction == 'back':
                 if parameters == '':
                     if 'last' in variables:
-                        current_line -= implied_type_conversion(variables['last'], 'int')+1
+                        current_line -= implied_type_conversion(variables['last'], 'int', current_line)+1
                     else:
                         warn(f'UNDEF VAR last IN LINE {current_line}')
                         variables['last'] = 0
-                        current_line -= implied_type_conversion(variables['last'], 'int')+1
+                        current_line -= implied_type_conversion(variables['last'], 'int', current_line)+1
                 else:
                     var_name = parameters.strip()
                     if var_name in variables:
-                        current_line -= implied_type_conversion(variables[var_name], 'int')+1
+                        current_line -= implied_type_conversion(variables[var_name], 'int', current_line)+1
                     else:
                         warn(f'UNDEF VAR {var_name} IN LINE {current_line}')
                         variables[var_name] = 0
-                        current_line -= implied_type_conversion(variables[var_name], 'int')+1
+                        current_line -= implied_type_conversion(variables[var_name], 'int', current_line)+1
             elif instruction == 'goto':
                 if parameters == '':
                     if 'last' in variables:
-                        current_line = implied_type_conversion(variables['last'], 'int')-1
+                        current_line = implied_type_conversion(variables['last'], 'int', current_line)-1
                     else:
                         warn(f'UNDEF VAR last IN LINE {current_line}')
                         variables['last'] = 0
-                        current_line = implied_type_conversion(variables['last'], 'int')-1
+                        current_line = implied_type_conversion(variables['last'], 'int', current_line)-1
                 else:
                     var_name = parameters.strip()
                     if var_name in variables:
-                        current_line = implied_type_conversion(variables[var_name], 'int')-1
+                        current_line = implied_type_conversion(variables[var_name], 'int', current_line)-1
                     else:
                         warn(f'UNDEF VAR {var_name} IN LINE {current_line}')
                         variables[var_name] = 0
-                        current_line = implied_type_conversion(variables[var_name], 'int')-1
+                        current_line = implied_type_conversion(variables[var_name], 'int', current_line)-1
             elif instruction == 'exit': break
             elif instruction == 'calc':
                 function, *arguments = parameters.split(' ')
                 arguments = [*arguments]
                 if False: pass
                 elif function == 'addition':
-                    if all([type_(argument,1)=='int' for argument in arguments]):
+                    if all([type_(argument,1,variables)=='int' for argument in arguments]):
                         sum = 0
                         for argument in arguments:
                             if argument not in variables:
                                 warn(f'UNDEF VAR {argument} IN LINE {current_line+1}')
                                 variables[argument] = 0
-                            sum += implied_type_conversion(variables[argument], 'int')
+                            sum += implied_type_conversion(variables[argument], 'int', current_line)
                         variables['last'] = sum
                     else:
                         sum = 0.0
@@ -656,39 +651,39 @@ def run(program, variables = None):
                             if argument not in variables:
                                 warn(f'UNDEF VAR {argument} IN LINE {current_line+1}')
                                 variables[argument] = 0
-                            sum += implied_type_conversion(variables[argument], 'float')
+                            sum += implied_type_conversion(variables[argument], 'float', current_line)
                         variables['last'] = sum
                 elif function == 'subtraction':
-                    if all([type_(argument,1)=='int' for argument in arguments]):
+                    if all([type_(argument,1,variables)=='int' for argument in arguments]):
                         if arguments[0] not in variables:
                             warn(f'UNDEF VAR {arguments[0]} IN LINE {current_line+1}')
                             variables[arguments[0]] = 0
-                        sum = implied_type_conversion(variables[arguments[0]], 'int')
+                        sum = implied_type_conversion(variables[arguments[0]], 'int', current_line)
                         for argument in arguments[1:]:
                             if argument not in variables:
                                 warn(f'UNDEF VAR {argument} IN LINE {current_line+1}')
                                 variables[argument] = 0
-                            sum -= implied_type_conversion(variables[argument], 'int')
+                            sum -= implied_type_conversion(variables[argument], 'int', current_line)
                         variables['last'] = sum
                     else:
                         if arguments[0] not in variables:
                             warn(f'UNDEF VAR {arguments[0]} IN LINE {current_line+1}')
                             variables[arguments[0]] = 0
-                        sum = implied_type_conversion(variables[arguments[0]], 'float')
+                        sum = implied_type_conversion(variables[arguments[0]], 'float', current_line)
                         for argument in arguments[1:]:
                             if argument not in variables:
                                 warn(f'UNDEF VAR {argument} IN LINE {current_line+1}')
                                 variables[argument] = 0
-                            sum -= implied_type_conversion(variables[argument], 'float')
+                            sum -= implied_type_conversion(variables[argument], 'float', current_line)
                         variables['last'] = sum
                 elif function == 'multiplication':
-                    if all([type_(argument,1)=='int' for argument in arguments]):
+                    if all([type_(argument,1,variables)=='int' for argument in arguments]):
                         sum = 1
                         for argument in arguments:
                             if argument not in variables:
                                 warn(f'UNDEF VAR {argument} IN LINE {current_line+1}')
                                 variables[argument] = 0
-                            sum *= implied_type_conversion(variables[argument], 'int')
+                            sum *= implied_type_conversion(variables[argument], 'int', current_line)
                         variables['last'] = sum
                     else:
                         sum = 1.0
@@ -696,77 +691,77 @@ def run(program, variables = None):
                             if argument not in variables:
                                 warn(f'UNDEF VAR {argument} IN LINE {current_line+1}')
                                 variables[argument] = 0
-                            sum *= implied_type_conversion(variables[argument], 'float')
+                            sum *= implied_type_conversion(variables[argument], 'float', current_line)
                         variables['last'] = sum
                 elif function == 'division':
                     if any([argument not in variables or
                             variables[argument]==0 for argument in arguments[1:]]):
                         warn(f'DIV BY ZERO IN LINE {current_line+1}')
                         variables['last'] = 0
-                    elif all([type_(argument,1)=='int' for argument in arguments]):
+                    elif all([type_(argument,1,variables)=='int' for argument in arguments]):
                         if arguments[0] not in variables:
                             warn(f'UNDEF VAR {arguments[0]} IN LINE {current_line+1}')
                             variables[arguments[0]] = 0
-                        sum = implied_type_conversion(variables[arguments[0]], 'int')
+                        sum = implied_type_conversion(variables[arguments[0]], 'int', current_line)
                         for argument in arguments[1:]:
                             if argument not in variables:
                                 warn(f'UNDEF VAR {argument} IN LINE {current_line+1}')
                                 variables[argument] = 0
-                            sum /= implied_type_conversion(variables[argument], 'int')
+                            sum /= implied_type_conversion(variables[argument], 'int', current_line)
                         variables['last'] = sum
                     else:
                         if arguments[0] not in variables:
                             warn(f'UNDEF VAR {arguments[0]} IN LINE {current_line+1}')
                             variables[arguments[0]] = 0
-                        sum = implied_type_conversion(variables[arguments[0]], 'float')
+                        sum = implied_type_conversion(variables[arguments[0]], 'float', current_line)
                         for argument in arguments[1:]:
                             if argument not in variables:
                                 warn(f'UNDEF VAR {argument} IN LINE {current_line+1}')
                                 variables[argument] = 0
-                            sum /= implied_type_conversion(variables[argument], 'float')
+                            sum /= implied_type_conversion(variables[argument], 'float', current_line)
                         variables['last'] = sum
                 elif function == 'modulo':
                     if any([argument in variables or
                             variables[argument]==0 for argument in arguments]):
                         warn(f'DIV BY ZERO IN LINE {current_line+1}')
                         variables['last'] = 0
-                    elif all([type_(argument,1)=='int' for argument in arguments]):
+                    elif all([type_(argument,1,variables)=='int' for argument in arguments]):
                         if arguments[0] not in variables:
                             warn(f'UNDEF VAR {arguments[0]} IN LINE {current_line+1}')
                             variables[arguments[0]] = 0
-                        sum = implied_type_conversion(variables[arguments[0]], 'int')
+                        sum = implied_type_conversion(variables[arguments[0]], 'int', current_line)
                         for argument in arguments[1:]:
                             if argument not in variables:
                                 warn(f'UNDEF VAR {argument} IN LINE {current_line+1}')
                                 variables[argument] = 0
-                            sum %= implied_type_conversion(variables[argument], 'int')
+                            sum %= implied_type_conversion(variables[argument], 'int', current_line)
                         variables['last'] = sum
                     else:
                         if arguments[0] not in variables:
                             warn(f'UNDEF VAR {arguments[0]} IN LINE {current_line+1}')
                             variables[arguments[0]] = 0
-                        sum = implied_type_conversion(variables[arguments[0]], 'float')
+                        sum = implied_type_conversion(variables[arguments[0]], 'float', current_line)
                         for argument in arguments[1:]:
                             if argument not in variables:
                                 warn(f'UNDEF VAR {argument} IN LINE {current_line+1}')
                                 variables[argument] = 0
-                            sum %= implied_type_conversion(variables[argument], 'float')
+                            sum %= implied_type_conversion(variables[argument], 'float', current_line)
                         variables['last'] = sum
                 elif function == 'power':
-                    if all([type_(argument,1)=='int' for argument in arguments]):
+                    if all([type_(argument,1,variables)=='int' for argument in arguments]):
                         if arguments[-1] not in variables:
                             warn(f'UNDEF VAR {arguments[0]} IN LINE {current_line+1}')
                             variables[arguments[-1]] = 0
-                        sum = implied_type_conversion(variables[arguments[-1]], 'int')
+                        sum = implied_type_conversion(variables[arguments[-1]], 'int', current_line)
                         for argument in arguments[-1:0:-1]:
                             if argument not in variables:
                                 warn(f'UNDEF VAR {argument} IN LINE {current_line+1}')
                                 variables[argument] = 0
-                            if sum==implied_type_conversion(variables[argument], 'int')==0:
+                            if sum==implied_type_conversion(variables[argument], 'int', current_line)==0:
                                 warn(f'ZERO POW ZERO IN LINE {current_line+1}')
                                 sum=1
                                 continue
-                            try: sum = implied_type_conversion(variables[argument], 'int') ** sum
+                            try: sum = implied_type_conversion(variables[argument], 'int', current_line) ** sum
                             except ZeroDivisionError:
                                 warn(f'DIV BY ZERO IN LINE {current_line+1}')
                                 sum = 0
@@ -775,15 +770,15 @@ def run(program, variables = None):
                         if arguments[-1] not in variables:
                             warn(f'UNDEF VAR {arguments[0]} IN LINE {current_line+1}')
                             variables[arguments[-1]] = 0
-                        sum = implied_type_conversion(variables[arguments[-1]], 'float')
+                        sum = implied_type_conversion(variables[arguments[-1]], 'float', current_line)
                         for argument in arguments[:-1]:
                             if argument not in variables:
                                 warn(f'UNDEF VAR {argument} IN LINE {current_line+1}')
                                 variables[argument] = 0
-                            if sum==implied_type_conversion(variables[argument], 'float')==0:
+                            if sum==implied_type_conversion(variables[argument], 'float', current_line)==0:
                                 warn(f'ZERO POW ZERO IN LINE {current_line+1}')
                                 variables['last'] = 1
-                            try: sum = implied_type_conversion(variables[argument], 'float') ** sum
+                            try: sum = implied_type_conversion(variables[argument], 'float', current_line) ** sum
                             except ZeroDivisionError:
                                 warn(f'DIV BY ZERO IN LINE {current_line+1}')
                                 sum = 0
@@ -797,7 +792,7 @@ def run(program, variables = None):
                         if arguments[i+1] not in variables:
                             warn(f'UNDEF VAR {arguments[i+1]} IN LINE {current_line+1}')
                             variables[arguments[i+1]] = 0
-                        true = true and less(variables[arguments[i]], variables[arguments[i+1]])
+                        true = true and less(variables[arguments[i]], variables[arguments[i+1]], current_line)
                     variables['last'] = true
                 elif function == 'greater':
                     true = True
@@ -808,7 +803,7 @@ def run(program, variables = None):
                         if arguments[i+1] not in variables:
                             warn(f'UNDEF VAR {arguments[i+1]} IN LINE {current_line+1}')
                             variables[arguments[i+1]] = 0
-                        true = true and greater(variables[arguments[i]], variables[arguments[i+1]])
+                        true = true and greater(variables[arguments[i]], variables[arguments[i+1]], current_line)
                     variables['last'] = true
                 elif function == 'equal':
                     true = True
@@ -827,7 +822,7 @@ def run(program, variables = None):
                         warn(f'UNDEF VAR {arguments[0]} IN LINE {current_line+1}')
                         variables[arguments[0]] = 0
                     try: variables['last'] = implied_type_conversion(variables[arguments[0]],
-                                                                'array')[1:]
+                                                                'array', current_line)[1:]
                     except IndexError:
                         warn(f'POP FROM EMPT ARR IN LINE {current_line+1}')
                         variables['last'] = 0
@@ -837,7 +832,7 @@ def run(program, variables = None):
                         warn(f'UNDEF VAR {arguments[0]} IN LINE {current_line+1}')
                         variables[arguments[0]] = 0
                     variables['last'] = implied_type_conversion(variables[arguments[0]],
-                                                                'array')[::-1]
+                                                                'array', current_line)[::-1]
                 elif function == 'index':
                     arguments += ['last'] * 5
                     if arguments[0] not in variables:
@@ -847,9 +842,9 @@ def run(program, variables = None):
                         warn(f'UNDEF VAR {arguments[1]} IN LINE {current_line+1}')
                         variables[arguments[1]] = 0
                     try: variables['last'] = implied_type_conversion(variables[arguments[0]],
-                                                                'array')[implied_type_conversion(
+                                                                'array', current_line)[implied_type_conversion(
                         variables[arguments[1]],
-                        'int')]
+                        'int', current_line)]
                     except IndexError:
                         warn(f'INDEX OUT OF RANGE IN LINE {current_line+1}')
                         variables['last'] = 0
@@ -862,7 +857,7 @@ def run(program, variables = None):
                         warn(f'UNDEF VAR {arguments[1]} IN LINE {current_line+1}')
                         variables[arguments[1]] = 0
                     variables['last'] = implied_type_conversion(variables[arguments[0]],
-                                                                'array') + [variables[arguments[1]]]
+                                                                'array', current_line) + [variables[arguments[1]]]
                 elif function == 'join':
                     arguments += ['last'] * 5
                     if arguments[0] not in variables:
@@ -873,9 +868,9 @@ def run(program, variables = None):
                         variables[arguments[1]] = 0
                     variables['last'] = \
                     implied_type_conversion(variables[arguments[1]],
-                        'string').join([implied_type_conversion(i,
-                        'string') for i in implied_type_conversion(
-                        variables[arguments[0]], 'array')])
+                        'string', current_line).join([implied_type_conversion(i,
+                        'string', current_line) for i in implied_type_conversion(
+                        variables[arguments[0]], 'array', current_line)])
                 elif function == 'split':
                     arguments += ['last']*5
                     if arguments[0] not in variables:
@@ -885,8 +880,8 @@ def run(program, variables = None):
                         warn(f'UNDEF VAR {arguments[1]} IN LINE {current_line+1}')
                         variables[arguments[1]] = 0
                     variables['last'] = implied_type_conversion(variables[arguments[0]],
-                        'string').split(implied_type_conversion(variables[arguments[1]],
-                        'string'))
+                        'string', current_line).split(implied_type_conversion(variables[arguments[1]],
+                        'string', current_line))
                 elif function == 'range':
                     arguments += ['last'] * 5
                     if arguments[0] not in variables:
@@ -900,11 +895,11 @@ def run(program, variables = None):
                         variables[arguments[2]] = 0
                     range_ = []
                     _1, _2, _3 = implied_type_conversion(variables[arguments[0]],
-                                                         'float'), \
+                                                         'float', current_line), \
                                 implied_type_conversion(variables[arguments[1]],
-                                                         'float'), \
+                                                         'float', current_line), \
                                 implied_type_conversion(variables[arguments[2]],
-                                                         'float')
+                                                         'float', current_line)
                     while True:
                         if _1 > _3:
                             break
@@ -920,7 +915,7 @@ def run(program, variables = None):
                         warn(f'UNDEF VAR {arguments[1]} IN LINE {current_line+1}')
                         variables[arguments[1]] = 0
                     variables['last'] = implied_type_conversion(variables[arguments[0]],
-                        type_(variables[arguments[1]]), implied=False)
+                        type_(variables[arguments[1]]), current_line, implied=False)
                 elif function == 'verbatimtype':
                     arguments += ['last'] * 5
                     if arguments[0] not in variables:
@@ -930,7 +925,7 @@ def run(program, variables = None):
                         warn(f'UNDEF VAR {arguments[1]} IN LINE {current_line+1}')
                         variables[arguments[1]] = 0
                     variables['last'] = implied_type_conversion(variables[arguments[0]],
-                        variables[arguments[1]], implied=False)
+                        variables[arguments[1]], current_line, implied=False)
                 elif function == 'int':
                     arguments += ['last'] * 5
                     if arguments[0] not in variables:
@@ -938,7 +933,7 @@ def run(program, variables = None):
                         variables[arguments[0]] = 0
                     variables['last'] = int(implied_type_conversion(
                         variables[arguments[0]],
-                        'string'))
+                        'string', current_line))
                 elif function == 'float':
                     arguments += ['last'] * 5
                     if arguments[0] not in variables:
@@ -946,7 +941,7 @@ def run(program, variables = None):
                         variables[arguments[0]] = 0
                     variables['last'] = float(implied_type_conversion(
                         variables[arguments[0]],
-                        'string'))
+                        'string', current_line))
                 elif function == 'character':
                     arguments += ['last'] * 5
                     if arguments[0] not in variables:
@@ -954,7 +949,7 @@ def run(program, variables = None):
                         variables[arguments[0]] = 0
                     variables['last'] = chr(implied_type_conversion(
                         variables[arguments[0]],
-                        'int'))
+                        'int', current_line))
                 elif function == 'ordinal':
                     arguments += ['last'] * 5
                     if arguments[0] not in variables:
@@ -962,7 +957,7 @@ def run(program, variables = None):
                         variables[arguments[0]] = 0
                     variables['last'] = ord(implied_type_conversion(
                         variables[arguments[0]],
-                        'character'))
+                        'character', current_line))
                 # math functions
                 elif function == 'sine':
                     arguments += ['last'] * 5
@@ -971,7 +966,7 @@ def run(program, variables = None):
                         variables[arguments[0]] = 0
                     variables['last'] = math.sin(implied_type_conversion(
                         variables[arguments[0]],
-                        'float'))
+                        'float', current_line))
                 elif function == 'cosine':
                     arguments += ['last'] * 5
                     if arguments[0] not in variables:
@@ -979,7 +974,7 @@ def run(program, variables = None):
                         variables[arguments[0]] = 0
                     variables['last'] = math.cos(implied_type_conversion(
                         variables[arguments[0]],
-                        'float'))
+                        'float', current_line))
                 elif function == 'tangent':
                     arguments += ['last'] * 5
                     if arguments[0] not in variables:
@@ -987,7 +982,7 @@ def run(program, variables = None):
                         variables[arguments[0]] = 0
                     variables['last'] = math.tan(implied_type_conversion(
                         variables[arguments[0]],
-                        'float'))
+                        'float', current_line))
                 elif function == 'arcsine':
                     arguments += ['last'] * 5
                     if arguments[0] not in variables:
@@ -995,7 +990,7 @@ def run(program, variables = None):
                         variables[arguments[0]] = 0
                     variables['last'] = math.asin(implied_type_conversion(
                         variables[arguments[0]],
-                        'float'))
+                        'float', current_line))
                 elif function == 'arccosine':
                     arguments += ['last'] * 5
                     if arguments[0] not in variables:
@@ -1003,7 +998,7 @@ def run(program, variables = None):
                         variables[arguments[0]] = 0
                     variables['last'] = math.acos(implied_type_conversion(
                         variables[arguments[0]],
-                        'float'))
+                        'float', current_line))
                 elif function == 'arctangent':
                     arguments += ['last'] * 5
                     if arguments[0] not in variables:
@@ -1011,7 +1006,7 @@ def run(program, variables = None):
                         variables[arguments[0]] = 0
                     variables['last'] = math.atan(implied_type_conversion(
                         variables[arguments[0]],
-                        'float'))
+                        'float', current_line))
                 elif function == 'phi': variables['last'] = (5**0.5+1)/2
                 elif function == 'pi': variables['last'] = math.pi
                 elif function == 'e': variables['last'] = math.e
@@ -1022,7 +1017,7 @@ def run(program, variables = None):
                         variables[arguments[0]] = 0
                     variables['last'] = math.factorial(implied_type_conversion(
                         variables[arguments[0]],
-                        'int'))
+                        'int', current_line))
                 elif function == 'log':
                     arguments += ['last'] * 5
                     if arguments[0] not in variables:
@@ -1033,8 +1028,8 @@ def run(program, variables = None):
                         variables[arguments[1]] = 0
                     variables['last'] = math.log(implied_type_conversion(
                         variables[arguments[0]],
-                        'float'), implied_type_conversion(variables[arguments[1]],
-                        'float'))
+                        'float', current_line), implied_type_conversion(variables[arguments[1]],
+                        'float', current_line))
                 # set functions
                 elif function == 'union':
                     arguments += ['last'] * 5
@@ -1046,9 +1041,9 @@ def run(program, variables = None):
                         variables[arguments[1]] = 0
                     variables['last'] = set(implied_type_conversion(
                         variables[arguments[0]],
-                        'list')) | set(implied_type_conversion(
+                        'list', current_line)) | set(implied_type_conversion(
                         variables[arguments[1]],
-                        'list'))
+                        'list', current_line))
                 elif function == 'intersection':
                     arguments += ['last'] * 5
                     if arguments[0] not in variables:
@@ -1059,9 +1054,9 @@ def run(program, variables = None):
                         variables[arguments[1]] = 0
                     variables['last'] = set(implied_type_conversion(
                         variables[arguments[0]],
-                        'list')) & set(implied_type_conversion(
+                        'list', current_line)) & set(implied_type_conversion(
                         variables[arguments[1]],
-                        'list'))
+                        'list', current_line))
                 elif function == 'difference':
                     arguments += ['last'] * 5
                     if arguments[0] not in variables:
@@ -1072,14 +1067,14 @@ def run(program, variables = None):
                         variables[arguments[1]] = 0
                     variables['last'] = set(implied_type_conversion(
                         variables[arguments[0]],
-                        'list')) - set(implied_type_conversion(
+                        'list', current_line)) - set(implied_type_conversion(
                         variables[arguments[1]],
-                        'list'))
+                        'list', current_line))
             elif instruction == 'recurse':
                 if 'last' not in variables:
                     warn(f'UNDEF VAR last IN LINE {current_line}')
                     variables['last'] = 0
-                vars = run(program, variables={'last': variables['last']})
+                vars = run(program, {'last': variables['last']})
                 if 'last' not in vars:
                     warn(f'UNDEF VAR last IN LINE {current_line}')
                     vars['last'] = 0
@@ -1096,7 +1091,7 @@ def run(program, variables = None):
         warn(f'UNEXP ERR IN LINE {current_line+1}')
         if debug_mode: warn(f'The exception raised was:\n\n\n{e}')
         if not disable_warnings: raise
-        return variables
+    return variables
 
 run(program)
 
