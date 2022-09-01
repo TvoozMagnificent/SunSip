@@ -9,21 +9,20 @@ import re
 
 def before_run():
 
-    if not '-n' in sys.argv: print('\n'*1000)
-    if '--help' in sys.argv: print('''
-    Syntax: python3 main.py program.slwnsnbp [options]
+    if '--help' in sys.argv: sys.stderr.write('''
+    \033[91mSyntax: python3 main.py program.slwnsnbp [options]
     Options:
         --help   : Print this help message and exit.
         -d       : Debug mode.
         -w       : Disable warnings.
-        -n       : Disable newlines added in front.
         -e       : All errors fail silently.
         --syntax : Syntax highlight the source code and exit.
-        -r       : Use rich printing, see the rich module.
-    '''); sys.exit()
+        -r       : Use rich printing, see the rich module.\033[0m
+
+'''); sys.exit()
 
     if '-v' in sys.argv:
-        print('''\033[91mVerbose Mode is not supported since 2.0.0\033[0m\n''')
+        sys.stderr.write('''\033[91mVerbose Mode is not supported since 2.0.0\033[0m\n''')
 
     try:
         file_containing_program = sys.argv[1]
@@ -53,7 +52,7 @@ def before_run():
 
         try: import rich
         except ImportError:
-            print('''\033[91mThe module "rich" needs to be installed.\033[0m\n''')
+            sys.stderr.write('''\033[91mThe module "rich" needs to be installed for syntax highlighting.\033[0m\n''')
         from rich.markup import escape as textize
 
         def syntax_highlight(text):
@@ -291,7 +290,7 @@ program, debug_mode, disable_warnings, use_rich = before_run()
 if use_rich:
     try: from rich import print
     except ImportError:
-        print('''\033[91mThe module "rich" needs to be installed.\n''' \
+        sys.stderr.write('''\033[91mThe module "rich" needs to be installed.\n''' \
               '''Alternatively, omit the '-r' flag.\033[0m\n''')
 
 def parse_program(program):
@@ -506,8 +505,7 @@ def report(current_line, instruction, parameters, variables):
         print()
 def warn(message):
     if not disable_warnings:
-        # use red color for warnings
-        print(f'\n\033[91mWARNING: {message}\033[0m\n')
+        sys.stderr.write(f'\n\033[91mWARNING: {message}\033[0m\n\n')
 
 def run(program, variables = None):
     if variables == None: variables = {}
@@ -1099,13 +1097,3 @@ if debug_mode: print('\n')
 
 # By the way, nobody is looking at the source code, right?
 
-
-
-
-
-
-
-
-
-
-# I like 1111
