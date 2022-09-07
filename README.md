@@ -38,7 +38,6 @@ pip install SunSip
 
 Or whatever way you use `pip`.
 
-Currently, the `pip` version might be outdated.
 
 ## Execution (Installation via `pip`)
 
@@ -47,32 +46,21 @@ SunSip code can be named with any extension, although the preferred extension is
 After writing the SunSip code, you can execute it using
 
 ```bash
-python -m SunSip program [options]
+sunsip path-to-program [options]
 ```
 
-Or whatever way you use `python`. Include the `-m` flag, and substitute `program` for the path to your program, including the file name and extension.
 
 For a list of options, refer to the help menu accessible via `python -m SunSip --help`.
 
-**Note: When using the `--help` flag, the usage says `python3 main.py program.slwnsnbp [options]`, which is inaccurate.**
-
-**Note: The terminal would warn, `<snip>: No module named SunSip.__main__; 'SunSip' is a package and cannot be directly executed`. Ignore such warnings.**
-
 ## Execution (Installation from source)
 
-SunSip code can be named with any extension, although the preferred extension is either none, `.txt`, `.sunsip`, `.snsp`, or `.slwnsnbp`.
+To install SunSip from source:
 
-After writing the SunSip code, you can execute it using
+1. Clone this repository
+2. Make sure you have [Poetry](https://python-poetry.org/) installed
+3. Run `poetry install` in the cloned repository
 
-```bash
-python pathtoinit pathtoprogram [options]
-```
-
-Or whatever way you use `python`. Substitute `program` for the path to your program, including the file name and extension, and `pathtoinit` is the path to the `__init__.py` file.
-
-For a list of options, refer to the help menu accessible via `python pathtoinit --help`, where `pathtoinit` is the path to the `__init__.py` file.
-
-**Note: When using the `--help` flag, the usage says `python3 main.py program.slwnsnbp [options]`, which is inaccurate.**
+You can then run `sunsip` and `sunsip-syntax-highlight` as normal.
 
 ## Test Your Installation
 
@@ -267,9 +255,7 @@ WARNING: IMPL TYPE CONV AT LINE 37
 40   815915283247897734345611269596115894272000000000
 ```
 
-It is not recommended to turn off warnings while debugging, but it is allowed to use `-d -w` or `-w -d`.
-
-**Note: `-dw` or `-wd` is not supported by SunSip.**
+It is not recommended to turn off warnings while debugging.
 
 # Contributing
 
@@ -291,7 +277,7 @@ See [Contributing](https://github.com/TvoozMagnificent/SunSip/blob/main/README.m
 Simply run:
 
 ```
-python -m SunSip program [options]
+sunsip-syntax-highlight path-to-program
 ```
 
 # Research
