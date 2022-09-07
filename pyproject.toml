@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "sunsip"
+version = "1.0.2"
+description = "SunSip Interpreter"
+authors = ["TvoosMagnificent <luchang1106@icloud.com>"]
+maintainers = ["Ginger <75683114+GingerIndustries@users.noreply.github.com>"]
+readme = "README.md"
+repository = "https://github.com/TvoozMagnificent/SunSip"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+rich = "^12.5.1"
+
+[tool.poetry.dev-dependencies]
+
+[tool.poetry.scripts]
+sunsip = 'sunsip:main'
+sunsip-syntax-highlight = "sunsip.syntax:main"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

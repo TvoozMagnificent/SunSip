@@ -6,300 +6,39 @@ import math
 import sys
 import os
 import re
+import argparse
+import rich
+
+use_rich = True
+debug_mode = False
+disable_warnings = False
 
 def before_run():
+    parser = argparse.ArgumentParser(description = "The SunSip Interpreter")
+    parser.add_argument("program", help="The path to the SunSip program file")
+    parser.add_argument("-d", "--debug", action='store_true', help="Enable debug mode")
+    parser.add_argument("-w", "--warnings", action='store_true', help="Disable warnings")
+    parser.add_argument("-e", "--errors", action='store_true', help="Disable errors")
 
-    if '--help' in sys.argv: sys.stderr.write('''
-    \033[91mSyntax: python3 main.py program.slwnsnbp [options]
-    Options:
-        --help   : Print this help message and exit.
-        -d       : Debug mode.
-        -w       : Disable warnings.
-        -e       : All errors fail silently.
-        --syntax : Syntax highlight the source code and exit.
-        -r       : Use rich printing, see the rich module.\033[0m
-
-'''); sys.exit()
-
-    if '-v' in sys.argv:
-        sys.stderr.write('''\033[91mVerbose Mode is not supported since 2.0.0\033[0m\n''')
-
+    args = parser.parse_args()
     try:
-        file_containing_program = sys.argv[1]
-    except IndexError:
-        print('\033[91m\nNo program specified.\n'
-              'Use the --help option for '
-              'usage help.\033[0m\n'); sys.exit()
-    debug_mode = '-d' in sys.argv
-    disable_warnings = '-w' in sys.argv
-    verbose_mode = False
-    noerr_mode = '-e' in sys.argv
-
-    try:
-        with open(file_containing_program, 'r') as f:
+        with open(args.program, "r") as f:
             program = f.readlines()
     except FileNotFoundError:
         print(f'\033[91mSorry, I can not find the file: '
-              f'{file_containing_program}.'
-              f'\nCheck the path, name, and file extension.'
-              f'\nFor usage help, use the --help option.\033[0m\n')
-        sys.exit()
-
-    if '--syntax' in sys.argv:
-        program = '\n'.join(program)
-
-        # Simple Syntax Highlighter for SunSip
-
-        try: import rich
-        except ImportError:
-            sys.stderr.write('''\033[91mThe module "rich" needs to be installed for syntax highlighting.\033[0m\n''')
-        from rich.markup import escape as textize
-
-        def syntax_highlight(text):
-            text = textize(text)
-            output = ''
-            lines = text.split('\n')
-            for line in lines:
-                while line.startswith(' '):
-                    output += '[on red] [default on default]'
-                    line = line[1:]
-                if line == '':
-                    output += '[default on default]\n'
-                    continue
-                command, *_ = line.split(' ')
-                if not _:
-                    if command == 'comment':
-                        output += '[#333333]comment'
-                        output += '[default on default]\n'
-                    elif command in ['in', 'out', 'line']:
-                        output += f'[#44ff00]{command}'
-                        output += '[default on default]\n'
-                    elif command in ['skip', 'back', 'goto', 'exit', 'recurse', 'defined']:
-                        output += f'[#998800]{command}'
-                        output += '[default on default]\n'
-                    else:
-                        output += f'[#ff0000]{command}'
-                        output += '[default on default]\n'
-
-                else:
-                    if command == 'comment':
-                        output += f'[#333333]{line}'
-                        output += '[default on default]\n'
-                    elif command in ['in', 'out', 'line']:
-                        if len(_) == 1:
-                            output += f'[#44ff00]{command} {_[0]}'
-                            output += '[default on default]\n'
-                        else:
-                            output += f'[#44ff00]{command} {_[0]}[#333333] {" ".join(_[1:])}'
-                            output += '[default on default]\n'
-                    elif command in ['skip', 'back', 'goto', 'defined']:
-                        if len(_) == 1:
-                            output += f'[#998800]{command} {_[0]}'
-                            output += '[default on default]\n'
-                        else:
-                            output += f'[#998800]{command} {_[0]}[#333333] {" ".join(_[1:])}'
-                            output += '[default on default]\n'
-                    elif command in ['exit','recurse']:
-                        output += f'[#998800]{command}[#333333] {" ".join(_)}'
-                        output += '[default on default]\n'
-                    elif command == 'set':
-                        arguments = ' '.join(_)
-                        if arguments.strip() == 'to':
-                            output += f'[#333333]{line}'
-                            output += '[default on default]\n'
-                        elif arguments.strip().startswith('to '):
-                            output += f'[#4400ff]{command} ' \
-                                      f'[#ffaadd]{arguments.split("to ", 1)[0]}to ' \
-                                      f'[#{parse(arguments.split("to ", 1)[1])}]' \
-                                      f'{arguments.split("to ", 1)[1]}'
-                            output += '[default on default]\n'
-                        elif arguments.strip().endswith(' to'):
-                            output += f'[#4400ff]{command} ' \
-                                      f'[#3388cc]{arguments.rsplit(" to", 1)[0]} ' \
-                                      f'[#ffaadd]to{arguments.rsplit(" to", 1)[1]}'
-                            output += '[default on default]\n'
-                        elif ' to ' in f' {arguments} ':
-                            output += f'[#4400ff]{command} ' \
-                                      f'[#3388cc]{arguments.split(" to ", 1)[0]} ' \
-                                      f'[#ffaadd]to ' \
-                                      f'[#{parse(arguments.split(" to ", 1)[1])}]' \
-                                      f'{arguments.split(" to ", 1)[1]}'
-                            output += '[default on default]\n'
-                        else:
-                            output += f'[#ff0000]{line}'
-                            output += '[default on default]\n'
-                    elif command == 'calc':
-                        if len(_) == 1:
-                            output += f'[#4400ff]{command} [#3388cc]{_[0]}'
-                            output += '[default on default]\n'
-                        else:
-                            output += f'[#4400ff]{command} [#3388cc]{_[0]} ' \
-                                      f'[#ff00ff]{" ".join(_[1:])}'
-                            output += '[default on default]\n'
-
-            return output
-
-        def get_value(value_as_string):
-
-            value = value_as_string
-
-            integer_pattern = r'^-?[0-9]+$'
-            if re.match(integer_pattern, value):
-                return int(value)
-
-            # float:
-            # with one or no '- character, some or no characters from "0123456789",
-            #           the '. character, and some or no characters from "0123456789"
-            # Use re.match to check if the string matches the pattern.
-
-            float_pattern = r'^-?[0-9]*\.[0-9]*$'
-            if re.match(float_pattern, value):
-                if value == '.': value = '0.'
-                if value == '-.': value = '-0.'
-                return float(value)
-
-            # Scientific Notation of integers:
-            # with one or no '- character,
-            #               one or more characters from "0123456789", the letter "e",
-            #           and one or more characters from "0123456789"
-            # Use re.match to check if the string matches the pattern.
-
-            scino_int_pattern = r'^-?[0-9]+e[0-9]+$'
-            if re.match(scino_int_pattern, value):
-                first, second = value.split('e')
-                return int(first) * 10 ** int(second)
-
-            # Scientific Notation of floats:
-            # with one or no '- character,
-            #               some or no characters from "0123456789", one or no '. character,
-            #           and some or no characters from "0123456789", the letter "E",
-            #           one or no '- character,
-            #               some or no characters from "0123456789", one or no '. character,
-            #           and some or no characters from "0123456789"
-            # Use re.match to check if the string matches the pattern.
-
-            scino_float_pattern = r'^-?[0-9]*\.*[0-9]*E-?[0-9]*\.*[0-9]*$'
-            if re.match(scino_float_pattern, value):
-                first, second = value.split('E')
-                if first == '': first = '0'
-                if first == '-': first = '0'
-                if first == '.': first = '0'
-                if first == '-.': first = '0'
-                if second == '': second = '0'
-                if second == '-': second = '0'
-                if second == '.': second = '0'
-                if second == '-.': second = '0'
-                return float(first) * 10 ** float(second)
-
-            # string:
-            # with one '" character, some or no more characters,
-            #           and an optional '" character
-            #           To indicate a '" character at the end of string,
-            #           end with two double quotes.
-            # Use re.match to check if the string matches the pattern.
-
-            string_pattern = r'^".*"?$'
-            if re.match(string_pattern, value):
-                value = value[1:]
-                if value.endswith('"'):
-                    value = value[:-1]
-                return value
-
-            # character:
-            # with one '' character, some character, and an optional '' character.
-            #           "''" will denote the '' character inside of "".
-            # Use re.match to check if the string matches the pattern.
-
-            character_pattern = r'^\'.\'?$'
-            if re.match(character_pattern, value):
-                value = value[1:]
-                return value[0]
-
-            if value == '[]': return list()
-            if value == '{}': return set()
-            if value == '<>': return list()
-
-            if value == 'y': return True
-            if value == 'n': return False
-
-            return None
-
-        def type_(value):
-            if isinstance(value, bool): return 'bool'
-            if isinstance(value, int): return 'int'
-            if isinstance(value, float): return 'float'
-            if isinstance(value, str): return 'string'
-            if isinstance(value, list): return 'array'
-            if isinstance(value, set): return 'set'
-            return 'none'
-
-        def parse(value):
-            value = value.strip()
-            if value == 'last': return '002288'
-            if value == 'y': return '006600'
-            if value == 'n': return '660000'
-            typ = type_(get_value(value))
-            dictionary = {
-                'int': 'cc4400',
-                'float': 'cc4400',
-                'string': '446600',
-                'array': '222288',
-                'set': '222288',
-                'none': 'ff0000',
-            }
-            return dictionary[typ]
-
-        def main():
-            print('\n' * 1000)
-            if '--help' in sys.argv: print('''
-            Syntax: python3 syntax.py program.slwnsnbp [options]
-            Options:
-                --help : Print this help message and exit.
-            '''); sys.exit()
-
-            try:
-                file_containing_program = sys.argv[1]
-            except IndexError:
-                print('\033[91m\nNo program specified.\n'
-                      'Use the --help option for '
-                      'usage help.\033[0m\n');
-                sys.exit()
-
-            try:
-                with open(file_containing_program, 'r') as f:
-                    program = f.read()
-            except FileNotFoundError:
-                print(f'\033[91mSorry, I can not find the file: '
-                      f'{file_containing_program}.'
-                      f'\nCheck the path, name, and file extension.'
-                      f'\nFor usage help, use the --help option.\033[0m\n')
-                sys.exit()
-
-            rich.print(syntax_highlight(program))
-
-        main()
-
-        exit()
-
-    use_rich = '-r' in sys.argv
-
-    return program, debug_mode, disable_warnings, use_rich
-
-program, debug_mode, disable_warnings, use_rich = before_run()
-
-if use_rich:
-    try: from rich import print
-    except ImportError:
-        sys.stderr.write('''\033[91mThe module "rich" needs to be installed.\n''' \
-              '''Alternatively, omit the '-r' flag.\033[0m\n''')
+            f'{args.program}.'
+            f'\nCheck the path, name, and file extension.'
+            f'\nFor usage help, use the --help option.\033[0m\n')
+        sys.exit(1)
+    program = parse_program(program)
+    if args.debug: print(f'\nProgram:\n{program}\n')
+    return program, args.debug, args.warnings
 
 def parse_program(program):
     program = [i.strip() for i in program]
     program = [[i.split(' ')[0], ' '.join(i.split(' ')[1:])] for i in program]
     program = [[j.strip() for j in i] for i in program]
     return program
-program = parse_program(program)
-if debug_mode: print(f'\nProgram:\n{program}\n')
 
 def parse_value(value):
 
@@ -1091,9 +830,14 @@ def run(program, variables = None):
         if not disable_warnings: raise
     return variables
 
-run(program)
+def main():
+    global debug_mode, disable_warnings
+    program, debug_mode, disable_warnings = before_run()
+    run(program)
 
-if debug_mode: print('\n')
+if __name__ == "__main__":
+    main()
+
 
 # By the way, nobody is looking at the source code, right?
 
