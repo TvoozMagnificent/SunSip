@@ -1,0 +1,5 @@
+poetry.lock
+.replit
+venv/
+.config/
+replit.nix
